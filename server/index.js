@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const { initializeDatabase } = require('./config/database');
+const { initializeDatabase, pool } = require('./config/database');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -31,6 +31,22 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', timestamp: new Date().toISOString() });
 });
 
+app.get('/api/db-health', async (req, res) => {
+  try {
+    const connection = await pool.getConnection();
+    await connection.query('SELECT 1'); // simple test query
+    connection.release();
+
+    res.json({
+      db: "connected",
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error("❌ DB health check failed:", err.message);
+    res.status(500).json({ db: "error", error: err.message });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -54,5 +70,9 @@ initializeDatabase().then(() => {
   console.error('Failed to start server:', error);
   process.exit(1);
 });
+
+
+
+
 
 module.exports = app;
