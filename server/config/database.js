@@ -1,4 +1,6 @@
 const mysql = require('mysql2/promise');
+const express = require("express");
+const app = express();
 require('dotenv').config();
 
 const dbConfig = {
@@ -71,6 +73,10 @@ const initializeDatabase = async () => {
 
     connection.release();
     console.log('Database initialized successfully');
+    app.get("/database", (req, res) => {
+      res.send("Database connection successfull");
+    })
+    
   } catch (error) {
     console.error('Database initialization failed:', error);
   }
