@@ -31,6 +31,8 @@ router.post('/login',
   authController.login
 );
 
+router.get('/me', authenticate, authController.getMe);
+
 router.put('/update-password', 
   authenticate, 
   updatePasswordValidation,

@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
-import { userService } from '../../services/userService'
+import { authService } from '../../services/authService'
 import { ratingService } from '../../services/ratingService'
 
 const UserProfile = () => {
@@ -37,31 +37,37 @@ const UserProfile = () => {
   })
 
   useEffect(() => {
-    if (user) {
-      loadUserData()
-    }
-  }, [user])
+  if (user) {
+    loadUserData()
+  }
+}, [user])
 
-  const loadUserData = async () => {
-    try {
-      setLoading(true)
-      
-      // Load user profile
-      const userResponse = await userService.getUserById(user.id)
-      setProfile(userResponse.user)
-      setEditForm(userResponse.user)
+const loadUserData = async () => {
+  try {
+    setLoading(true)
+    
+    // Load user profile
+    const token = localStorage.getItem('token');
+    const userResponse = await authService.getCurrentUser(token);
+    setProfile(userResponse)
+    setEditForm(userResponse)
 
-      // Load user ratings
+    // Load user ratings only if role is 'user'
+    if (userResponse.role === 'user') {
       const ratingsResponse = await ratingService.getUserRatings()
       setRatings(ratingsResponse.ratings || [])
-
-    } catch (err) {
-      setError('Failed to load profile data. Please try again later.')
-      console.error('Error loading user data:', err)
-    } finally {
-      setLoading(false)
+    } else {
+      setRatings([]) // Clear ratings for non-user roles
     }
+
+  } catch (err) {
+    setError('Failed to load profile data. Please try again later.')
+    console.error('Error loading user data:', err)
+  } finally {
+    setLoading(false)
   }
+}
+
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault()

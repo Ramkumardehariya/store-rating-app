@@ -23,5 +23,10 @@ export const authService = {
   async updatePassword(passwordData) {
     const response = await api.put('/auth/update-password', passwordData)
     return response.data
+  },
+
+  async getCurrentUser(token){
+    const response = await api.get('/auth/me', token);
+    return response.data;
   }
 }
