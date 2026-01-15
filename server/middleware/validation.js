@@ -122,7 +122,14 @@ const validateUniqueEmail = (model) => {
       next();
     } catch (error) {
       console.error('Email validation error:', error);
-      res.status(500).json({ error: 'Internal server error during email validation' });
+      // Provide more specific error message for database connection issues
+      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ER_ACCESS_DENIED_ERROR') {
+        return res.status(500).json({ 
+          error: 'Database connection failed. Please check your database configuration.',
+          details: error.message 
+        });
+      }
+      res.status(500).json({ error: 'Internal server error during email validation', details: error.message });
     }
   };
 };
@@ -318,6 +325,68 @@ const validateSelfAction = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to validate store update fields
+ */
+const validateStoreUpdate = (req, res, next) => {
+  const { name, email, address } = req.body;
+  
+  // Validate store name if provided
+  if (name !== undefined) {
+    if (typeof name !== 'string') {
+      return res.status(400).json({
+        error: 'Store name must be a string'
+      });
+    }
+    
+    if (name.length < 20 || name.length > 60) {
+      return res.status(400).json({
+        error: 'Store name must be between 20 and 60 characters'
+      });
+    }
+  }
+  
+  // Validate store email if provided
+  if (email !== undefined) {
+    if (typeof email !== 'string') {
+      return res.status(400).json({
+        error: 'Store email must be a string'
+      });
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        error: 'Invalid email format'
+      });
+    }
+  }
+  
+  // Validate store address if provided
+  if (address !== undefined) {
+    if (typeof address !== 'string') {
+      return res.status(400).json({
+        error: 'Store address must be a string'
+      });
+    }
+    
+    if (address.length > 400) {
+      return res.status(400).json({
+        error: 'Store address must not exceed 400 characters'
+      });
+    }
+  }
+  
+  // Check if at least one field is being updated
+  if (name === undefined && email === undefined && address === undefined && req.body.owner_id === undefined) {
+    return res.status(400).json({
+      error: 'At least one field must be provided for update'
+    });
+  }
+  
+  next();
+};
+
 module.exports = {
   handleValidationErrors,
   validateQueryParams,
@@ -331,5 +400,6 @@ module.exports = {
   validateAddressLength,
   sanitizeInput,
   validatePagination,
-  validateSelfAction
+  validateSelfAction,
+  validateStoreUpdate
 };

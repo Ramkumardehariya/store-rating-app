@@ -8,7 +8,8 @@ const {
   validateUniqueEmail,
   validateUserExists,
   validatePagination,
-  sanitizeInput
+  sanitizeInput,
+  validateStoreUpdate
 } = require('../middleware/validation');
 const { createStoreValidation } = require('../utils/validators');
 
@@ -37,6 +38,16 @@ router.get('/owner/dashboard',
   authenticate, 
   authorize('store_owner'),
   storeController.getStoreOwnerDashboard
+);
+
+// Store update routes - accessible by admin and store owners
+router.put('/:id', 
+  authenticate, 
+  authorize('admin', 'store_owner'),
+  validateStoreUpdate,
+  handleValidationErrors,
+  validateUserExists,
+  storeController.updateStore
 );
 
 module.exports = router;

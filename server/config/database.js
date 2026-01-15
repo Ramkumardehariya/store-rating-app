@@ -2,11 +2,11 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 const dbConfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'store_rating_db',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -27,8 +27,8 @@ const initializeDatabase = async () => {
         password VARCHAR(255) NOT NULL,
         address VARCHAR(400) NOT NULL,
         role ENUM('admin', 'user', 'store_owner') DEFAULT 'user',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        created_at DATETIME,
+        updated_at DATETIME
       )
     `);
 
@@ -40,8 +40,8 @@ const initializeDatabase = async () => {
         email VARCHAR(255) UNIQUE NOT NULL,
         address VARCHAR(400) NOT NULL,
         owner_id INT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        created_at DATETIME,
+        updated_at DATETIME,
         FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
       )
     `);
@@ -52,10 +52,10 @@ const initializeDatabase = async () => {
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
         store_id INT NOT NULL,
-        rating INT CHECK (rating >= 1 AND rating <= 5) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        UNIQUE KEY unique_user_store (user_id, store_id),
+        rating INT NOT NULL,
+        created_at DATETIME,
+        updated_at DATETIME,
+        UNIQUE unique_user_store (user_id, store_id),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE
       )

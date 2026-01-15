@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Users, 
   Store, 
@@ -20,6 +21,7 @@ import { storeService } from '../../services/storeService'
 import { ratingService } from '../../services/ratingService'
 
 const AdminDashboard = () => {
+  const navigate = useNavigate()
   const [stats, setStats] = useState(null)
   const [recentUsers, setRecentUsers] = useState([])
   const [recentStores, setRecentStores] = useState([])
@@ -193,7 +195,7 @@ const AdminDashboard = () => {
       )}
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="card">
         <div className="border-b">
           <nav className="flex space-x-8 px-6">
             {['overview', 'users', 'stores', 'analytics'].map((tab) => (
@@ -294,16 +296,19 @@ const AdminDashboard = () => {
                     <input
                       type="text"
                       placeholder="Search users..."
-                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="input-field pl-10"
                     />
                   </div>
-                  <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                  <select className="input-field">
                     <option>All Roles</option>
                     <option>Admin</option>
                     <option>Store Owner</option>
                     <option>User</option>
                   </select>
-                  <button className="btn-primary flex items-center space-x-2">
+                  <button 
+                    onClick={() => navigate('/admin/create-user')}
+                    className="btn-primary flex items-center space-x-2"
+                  >
                     <UserPlus className="h-4 w-4" />
                     <span>Add User</span>
                   </button>
@@ -385,10 +390,13 @@ const AdminDashboard = () => {
                     <input
                       type="text"
                       placeholder="Search stores..."
-                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="input-field pl-10"
                     />
                   </div>
-                  <button className="btn-primary flex items-center space-x-2">
+                  <button 
+                    onClick={() => navigate('/admin/create-store')}
+                    className="btn-primary flex items-center space-x-2"
+                  >
                     <StoreIcon className="h-4 w-4" />
                     <span>Add Store</span>
                   </button>

@@ -103,6 +103,65 @@ class Store {
     );
     return rows;
   }
+
+  static async update(id, updateData, userId = null, userRole = null) {
+    const { name, email, address, owner_id } = updateData;
+    
+    // Get current store data
+    const [currentStore] = await pool.execute('SELECT * FROM stores WHERE id = ?', [id]);
+    if (!currentStore.length) {
+      return null;
+    }
+
+    // Build dynamic update query based on provided fields
+    const updateFields = [];
+    const updateValues = [];
+
+    if (name !== undefined) {
+      updateFields.push('name = ?');
+      updateValues.push(name);
+    }
+
+    if (email !== undefined) {
+      updateFields.push('email = ?');
+      updateValues.push(email);
+    }
+
+    if (address !== undefined) {
+      updateFields.push('address = ?');
+      updateValues.push(address);
+    }
+
+    if (owner_id !== undefined) {
+      updateFields.push('owner_id = ?');
+      updateValues.push(owner_id);
+    }
+
+    if (updateFields.length === 0) {
+      return false; // No fields to update
+    }
+
+    updateFields.push('updated_at = NOW()');
+    updateValues.push(id);
+
+    const query = `UPDATE stores SET ${updateFields.join(', ')} WHERE id = ?`;
+    const [result] = await pool.execute(query, updateValues);
+    
+    return result.affectedRows > 0;
+  }
+
+  static async checkOwnerExists(ownerId, excludeStoreId = null) {
+    let query = 'SELECT id FROM stores WHERE owner_id = ?';
+    const params = [ownerId];
+    
+    if (excludeStoreId) {
+      query += ' AND id != ?';
+      params.push(excludeStoreId);
+    }
+    
+    const [rows] = await pool.execute(query, params);
+    return rows.length > 0;
+  }
 }
 
 module.exports = Store;

@@ -11,9 +11,11 @@ import {
   Edit,
   Share2
 } from 'lucide-react'
+import { Store } from 'lucide-react'
 import RatingStars from '../../components/ratings/RatingStars'
 import RatingForm from '../../components/ratings/RatingForm'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
+import StoreEditForm from '../../components/stores/StoreEditForm'
 import { storeService } from '../../services/storeService'
 import { ratingService } from '../../services/ratingService'
 import { useAuth } from '../../contexts/AuthContext'
@@ -21,7 +23,7 @@ import { useAuth } from '../../contexts/AuthContext'
 const StoreDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, user, isAdmin, isStoreOwner } = useAuth()
 
   const [store, setStore] = useState(null)
   const [userRating, setUserRating] = useState(null)
@@ -30,6 +32,7 @@ const StoreDetail = () => {
   const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState('overview')
   const [showRatingForm, setShowRatingForm] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -69,11 +72,12 @@ const StoreDetail = () => {
     }
   }
 
-  const handleRatingSubmit = async (rating) => {
+  const handleRatingSubmit = async (rating, comment) => {
     try {
       await ratingService.submitRating({
         store_id: parseInt(id),
-        rating: rating
+        rating: rating,
+        comment: comment
       })
       
       setUserRating(rating)
@@ -104,6 +108,11 @@ const StoreDetail = () => {
       navigator.clipboard.writeText(window.location.href)
       alert('Store link copied to clipboard!')
     }
+  }
+
+  const handleStoreUpdate = (updatedStore) => {
+    setStore(updatedStore)
+    setShowEditForm(false)
   }
 
   if (loading) {
@@ -155,12 +164,12 @@ const StoreDetail = () => {
       </div>
 
       {/* Store Header */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="card p-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Store Image (placeholder) */}
           <div className="flex-shrink-0">
-            <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-              <Store className="h-10 w-10 text-white" />
+            <div className="w-24 h-24 bg-primary-100 rounded-lg flex items-center justify-center">
+              <Store className="h-10 w-10 text-primary-600" />
             </div>
           </div>
 
@@ -233,9 +242,12 @@ const StoreDetail = () => {
                 </Link>
               )}
 
-              {/* Store owner actions */}
-              {user?.id === store.owner_id && (
-                <button className="btn-secondary flex items-center space-x-2">
+              {/* Store owner and admin actions */}
+              {(isAdmin || (isStoreOwner && user?.id === store.owner_id)) && (
+                <button 
+                  onClick={() => setShowEditForm(true)}
+                  className="btn-secondary flex items-center space-x-2"
+                >
                   <Edit className="h-4 w-4" />
                   <span>Edit Store</span>
                 </button>
@@ -246,14 +258,14 @@ const StoreDetail = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="card">
         <div className="border-b">
           <nav className="flex space-x-8 px-6">
             {['overview', 'ratings', 'contact'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-colors ${
+                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                   activeTab === tab
                     ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -432,6 +444,15 @@ const StoreDetail = () => {
           userRating={userRating}
           onSubmit={handleRatingSubmit}
           onClose={() => setShowRatingForm(false)}
+        />
+      )}
+
+      {/* Edit Store Modal */}
+      {showEditForm && (
+        <StoreEditForm
+          store={store}
+          onUpdate={handleStoreUpdate}
+          onClose={() => setShowEditForm(false)}
         />
       )}
     </div>

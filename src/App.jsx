@@ -12,6 +12,9 @@ import MyRatings from './pages/ratings/MyRatings'
 import AdminDashboard from './pages/dashboard/AdminDashboard'
 import StoreOwnerDashboard from './pages/dashboard/StoreOwnerDashboard'
 import UserProfile from './pages/dashboard/UserProfile'
+import CreateUserForm from './components/dashboard/CreateUserForm'
+import CreateStoreForm from './components/dashboard/CreateStoreForm'
+import UserManagement from './components/dashboard/UserManagement'
 import ProtectedRoute from './components/common/ProtectedRoute'
 
 function App() {
@@ -45,6 +48,24 @@ function App() {
               <Route path="/admin/dashboard" element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/create-user" element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <CreateUserForm />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/create-store" element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <CreateStoreForm />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/users" element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <UserManagement />
                 </ProtectedRoute>
               } />
               

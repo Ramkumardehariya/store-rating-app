@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, Star, User } from 'lucide-react'
+import { MapPin, Star, User, Store } from 'lucide-react'
 import RatingStars from '../ratings/RatingStars'
 
-const StoreCard = ({ store, viewMode = 'grid' }) => {
+const StoreCard = ({ store, viewMode = 'grid', userRating }) => {
   if (viewMode === 'list') {
     return (
       <div className="card hover:shadow-lg transition-shadow duration-200">
@@ -87,12 +87,21 @@ const StoreCard = ({ store, viewMode = 'grid' }) => {
           {store.total_ratings || 0} ratings
         </div>
         
-        <Link
-          to={`/stores/${store.id}`}
-          className="text-primary-600 hover:text-primary-700 font-medium text-sm"
-        >
-          View Details →
-        </Link>
+        <div className="flex items-center space-x-2">
+          {userRating && (
+            <div className="flex items-center space-x-1 text-xs text-gray-600">
+              <span>Your rating:</span>
+              <RatingStars rating={userRating} size="sm" />
+            </div>
+          )}
+          
+          <Link
+            to={`/stores/${store.id}`}
+            className="text-primary-600 hover:text-primary-700 font-medium text-sm"
+          >
+            View Details →
+          </Link>
+        </div>
       </div>
     </div>
   )

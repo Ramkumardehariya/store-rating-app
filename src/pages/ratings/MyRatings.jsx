@@ -219,7 +219,7 @@ const MyRatings = () => {
       )}
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-lg shadow-sm border p-4">
+      <div className="card p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1">
@@ -230,7 +230,7 @@ const MyRatings = () => {
                 placeholder="Search your rated stores..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 input-field"
               />
             </div>
           </div>
@@ -240,7 +240,7 @@ const MyRatings = () => {
             <select
               value={ratingFilter}
               onChange={(e) => setRatingFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="input-field"
             >
               <option value="all">All Ratings</option>
               <option value="5">5 Stars</option>
@@ -253,7 +253,7 @@ const MyRatings = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="input-field"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>

@@ -16,23 +16,17 @@ router.use(authenticate);
 router.use(sanitizeInput);
 router.use(validatePagination);
 
-// User routes
+// User routes (all authenticated users can submit ratings)
 router.post('/submitRating', 
-  authorize('user'),
   ratingValidation,
   handleValidationErrors,
   validateRating,
-  validateStoreOwnership,
   ratingController.submitRating
 );
 
-router.get('/getUserRating', 
-  authorize('user'),
-  ratingController.getUserRatings
-);
+router.get('/getUserRating', ratingController.getUserRatings);
 
 router.get('/store/rating/:storeId', 
-  authorize('user'),
   validateStoreOwnership,
   ratingController.getStoreWithUserRating
 );

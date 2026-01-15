@@ -5,10 +5,12 @@ import StoreCard from '../../components/stores/StoreCard'
 import StoreFilters from '../../components/stores/StoreFilters'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import { storeService } from '../../services/storeService'
+import { ratingService } from '../../services/ratingService'
 import { useAuth } from '../../contexts/AuthContext'
 
 const Stores = () => {
   const [stores, setStores] = useState([])
+  const [storesWithUserRatings, setStoresWithUserRatings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
@@ -21,7 +23,7 @@ const Stores = () => {
     sortOrder: 'asc'
   })
 
-  const { isAdmin } = useAuth()
+  const { isAuthenticated, isAdmin } = useAuth()
 
   useEffect(() => {
     loadStores()
@@ -31,7 +33,28 @@ const Stores = () => {
     try {
       setLoading(true)
       const response = await storeService.getAllStores(filters)
-      setStores(response.stores || [])
+      const storesData = response.stores || []
+      setStores(storesData)
+      
+      // Load user ratings for each store if authenticated
+      if (isAuthenticated) {
+        const storesWithRatings = await Promise.all(
+          storesData.map(async (store) => {
+            try {
+              const userRatingResponse = await ratingService.getStoreWithUserRating(store.id)
+              return {
+                ...store,
+                userRating: userRatingResponse.store.user_rating
+              }
+            } catch (err) {
+              return store
+            }
+          })
+        )
+        setStoresWithUserRatings(storesWithRatings)
+      } else {
+        setStoresWithUserRatings(storesData)
+      }
     } catch (err) {
       setError('Failed to load stores. Please try again later.')
       console.error('Error loading stores:', err)
@@ -63,7 +86,7 @@ const Stores = () => {
     setSearchTerm('')
   }
 
-  const filteredStores = stores.filter(store => {
+  const filteredStores = storesWithUserRatings.filter(store => {
     if (!searchTerm) return true
     const term = searchTerm.toLowerCase()
     return (
@@ -106,7 +129,7 @@ const Stores = () => {
       </div>
 
       {/* Search and Controls */}
-      <div className="bg-white rounded-lg shadow-sm border p-4">
+      <div className="card p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1">
@@ -117,7 +140,7 @@ const Stores = () => {
                 placeholder="Search stores by name, address, or owner..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 input-field"
               />
             </div>
           </form>
@@ -126,7 +149,7 @@ const Stores = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center space-x-2 px-3 py-2 border rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 border rounded-lg ${
                 showFilters 
                   ? 'bg-primary-50 border-primary-300 text-primary-700' 
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -139,7 +162,7 @@ const Stores = () => {
             <div className="flex border border-gray-300 rounded-lg overflow-hidden">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 transition-colors ${
+                className={`p-2 ${
                   viewMode === 'grid' 
                     ? 'bg-primary-600 text-white' 
                     : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -149,7 +172,7 @@ const Stores = () => {
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 transition-colors ${
+                className={`p-2 ${
                   viewMode === 'list' 
                     ? 'bg-primary-600 text-white' 
                     : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -187,7 +210,7 @@ const Stores = () => {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-white rounded-lg shadow-sm border p-4">
+        <div className="card p-4">
           <StoreFilters 
             filters={filters} 
             onFilterChange={handleFilterChange}
@@ -223,6 +246,7 @@ const Stores = () => {
               key={store.id} 
               store={store} 
               viewMode={viewMode}
+              userRating={store.userRating}
             />
           ))}
         </div>

@@ -184,10 +184,10 @@ const loadUserData = async () => {
           <div className="card space-y-1">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left ${
                 activeTab === 'profile'
                   ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  : 'text-gray-700'
               }`}
             >
               <User className="h-4 w-4" />
@@ -196,10 +196,10 @@ const loadUserData = async () => {
             
             <button
               onClick={() => setActiveTab('security')}
-              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left ${
                 activeTab === 'security'
                   ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  : 'text-gray-700'
               }`}
             >
               <Lock className="h-4 w-4" />
@@ -208,10 +208,10 @@ const loadUserData = async () => {
             
             <button
               onClick={() => setActiveTab('activity')}
-              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left ${
                 activeTab === 'activity'
                   ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  : 'text-gray-700'
               }`}
             >
               <Star className="h-4 w-4" />
@@ -220,10 +220,10 @@ const loadUserData = async () => {
             
             <button
               onClick={() => setActiveTab('preferences')}
-              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left ${
                 activeTab === 'preferences'
                   ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  : 'text-gray-700'
               }`}
             >
               <Settings className="h-4 w-4" />

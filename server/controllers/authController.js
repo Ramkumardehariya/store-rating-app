@@ -42,7 +42,14 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ error: 'Internal server error', errors: error.message });
+    // Provide more specific error messages for database issues
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ER_ACCESS_DENIED_ERROR') {
+      return res.status(500).json({ 
+        error: 'Database connection failed. Please check your database configuration.',
+        details: error.message 
+      });
+    }
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 };
 
