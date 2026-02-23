@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       setUser(response.user)
       setToken(response.token)
       authService.setToken(response.token)
-      return { success: true }
+      return { success: true, user: response.user }
     } catch (error) {
       return {
         success: false,

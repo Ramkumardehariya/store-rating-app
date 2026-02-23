@@ -11,7 +11,8 @@ import {
   Linkedin,
   ArrowUp,
   Heart,
-  Send
+  Send,
+  ChevronRight
 } from 'lucide-react'
 
 const Footer = () => {
@@ -57,20 +58,22 @@ const Footer = () => {
   ]
 
   return (
-    <footer className="bg-[#0086c9] text-white">
+    <footer className="bg-gray-50 text-gray-700 border-t border-gray-200">
       {/* Main Footer Content */}
-      <div className="max-w-[1080px] mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-[1200px] mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand Section */}
-          <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
-              <Store className="h-8 w-8 text-white" />
-              <span className="text-2xl font-bold text-white">StoreRatings</span>
+          <div className="lg:col-span-2">
+            <Link to="/" className="flex items-center space-x-3 mb-6">
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-2 rounded-lg">
+                <Store className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">StoreRatings</span>
             </Link>
-            <p className="text-gray-100 mb-6 leading-relaxed">
+            <p className="text-gray-600 mb-8 leading-relaxed text-sm max-w-sm">
               Discover the best stores based on real customer ratings. Share your experiences and help others make informed decisions.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-3">
               {socialLinks.map((social) => {
                 const Icon = social.icon
                 return (
@@ -79,10 +82,10 @@ const Footer = () => {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`text-gray-200 hover:text-white transition-colors ${social.color}`}
+                    className="bg-white p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition-all duration-200"
                     aria-label={social.name}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-4 w-4" />
                   </a>
                 )
               })}
@@ -91,37 +94,41 @@ const Footer = () => {
 
           {/* Navigation Column */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Home</h3>
-            <ul className="space-y-2">
+            <h3 className="text-sm font-semibold mb-6 text-gray-900 uppercase tracking-wider">Product</h3>
+            <ul className="space-y-3">
               <li>
                 <Link
-                  to="/"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  to="/stores"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
-                  Home
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Browse Stores
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/stores"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  to="/my-ratings"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
-                  Stores
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  My Ratings
                 </Link>
               </li>
               <li>
                 <Link
                   to="/about"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   About Us
                 </Link>
               </li>
               <li>
                 <Link
                   to="/contact"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Contact
                 </Link>
               </li>
@@ -130,119 +137,96 @@ const Footer = () => {
 
           {/* User & Legal Column */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">My Ratings</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/my-ratings"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
-                >
-                  My Ratings
-                </Link>
-              </li>
+            <h3 className="text-sm font-semibold mb-6 text-gray-900 uppercase tracking-wider">Account</h3>
+            <ul className="space-y-3">
               <li>
                 <Link
                   to="/profile"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Profile
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/privacy"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  to="/store-owner/dashboard"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Store Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/privacy"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
+                >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Privacy Policy
                 </Link>
               </li>
               <li>
                 <Link
                   to="/terms"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Terms of Service
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Store Management Column */}
+          {/* Resources Column */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Store Dashboard</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/store-owner/dashboard"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
-                >
-                  Store Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/stores/create"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
-                >
-                  Add Store
-                </Link>
-              </li>
+            <h3 className="text-sm font-semibold mb-6 text-gray-900 uppercase tracking-wider">Resources</h3>
+            <ul className="space-y-3">
               <li>
                 <Link
                   to="/guidelines"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Store Guidelines
                 </Link>
               </li>
               <li>
                 <Link
                   to="/support"
-                  className="text-gray-200 hover:text-white transition-colors duration-200"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
                 >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Support
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/faq"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
+                >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog"
+                  className="text-gray-600 hover:text-emerald-600 transition-colors duration-200 flex items-center group"
+                >
+                  <ChevronRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Blog
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Contact Information Section */}
-        <div className="border-t border-blue-300 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
-            <div className="flex items-center space-x-2">
-              <Mail className="h-5 w-5 text-white flex-shrink-0" />
-              <a 
-                href="mailto:support@storeratings.com"
-                className="text-gray-200 hover:text-white transition-colors"
-              >
-                support@storeratings.com
-              </a>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Phone className="h-5 w-5 text-white flex-shrink-0" />
-              <a 
-                href="tel:+11234567890"
-                className="text-gray-200 hover:text-white transition-colors"
-              >
-                +1 (123) 456-7890
-              </a>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <MapPin className="h-5 w-5 text-white flex-shrink-0" />
-              <p className="text-gray-200">
-                123 Business Ave, Suite 100, City, State 12345
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Newsletter Section */}
-        <div className="border-t border-blue-300 mt-8 pt-8">
+        <div className="border-t border-gray-200 mt-16 pt-12">
           <div className="max-w-2xl mx-auto text-center">
-            <p className="text-gray-100 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Stay Updated</h3>
+            <p className="text-gray-600 mb-6 text-sm">
               Subscribe to our newsletter for the latest store reviews and platform updates.
             </p>
             <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -251,12 +235,12 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent bg-white text-gray-900"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 text-sm"
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-2 bg-white text-[#0086c9] rounded-lg hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center space-x-2"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 flex items-center justify-center space-x-2 text-sm font-medium shadow-sm hover:shadow-md"
               >
                 <span>Subscribe</span>
                 <Send className="h-4 w-4" />
@@ -267,43 +251,37 @@ const Footer = () => {
       </div>
 
       {/* Bottom Footer Bar */}
-      <div className="bg-[#005a8a] border-t border-blue-400">
-        <div className="max-w-[1080px] mx-auto px-4 py-4">
+      <div className="bg-white border-t border-gray-200">
+        <div className="max-w-[1200px] mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
-            <div className="flex items-center space-x-2 text-gray-200 text-sm">
+            <div className="flex items-center space-x-2 text-gray-600 text-sm">
               <span>&copy; {currentYear} StoreRatings. All rights reserved.</span>
-              <span className="hidden sm:inline">•</span>
-              <span className="flex items-center space-x-1">
-                <span>Made with</span>
-                <Heart className="h-4 w-4 text-red-500 fill-current" />
-                <span>by Ramkumar Dehariya</span>
-              </span>
             </div>
 
             {/* Bottom Links */}
             <div className="flex items-center space-x-6 text-sm">
               <Link
                 to="/privacy"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
+                className="text-gray-600 hover:text-emerald-600 transition-colors duration-200"
               >
-                Privacy Policy
+                Privacy
               </Link>
               <Link
                 to="/terms"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
+                className="text-gray-600 hover:text-emerald-600 transition-colors duration-200"
               >
-                Terms of Service
+                Terms
               </Link>
               <Link
                 to="/cookies"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
+                className="text-gray-600 hover:text-emerald-600 transition-colors duration-200"
               >
-                Cookie Policy
+                Cookies
               </Link>
               <button
                 onClick={scrollToTop}
-                className="flex items-center space-x-1 text-gray-200 hover:text-white transition-colors duration-200"
+                className="flex items-center space-x-1 text-gray-600 hover:text-emerald-600 transition-colors duration-200"
                 aria-label="Back to top"
               >
                 <span>Back to top</span>

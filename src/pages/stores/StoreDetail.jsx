@@ -36,6 +36,13 @@ const StoreDetail = () => {
 
   useEffect(() => {
     if (id) {
+      // Validate that id is a valid number
+      const storeId = parseInt(id)
+      if (isNaN(storeId) || storeId <= 0) {
+        setError(`Invalid store ID: ${id}. Store ID must be a positive number.`)
+        setLoading(false)
+        return
+      }
       loadStoreDetails()
     }
   }, [id])
@@ -45,9 +52,12 @@ const StoreDetail = () => {
       setLoading(true)
       setError('')
 
+      console.log(`Loading store details for ID: ${id}`)
+      
       // Load store details
       const storeResponse = await storeService.getStoreById(id)
       setStore(storeResponse.store)
+      console.log('Store loaded successfully:', storeResponse.store)
 
       // Load store ratings
       const ratingsResponse = await storeService.getStoreRatings?.(id) || { ratings: [] }
@@ -65,8 +75,15 @@ const StoreDetail = () => {
       }
 
     } catch (err) {
-      setError('Store not found or failed to load store details.')
-      console.error('Error loading store details:', err)
+      console.error(`Error loading store details for ID ${id}:`, err)
+      
+      if (err.response?.status === 404) {
+        setError(`Store with ID ${id} not found. It may have been deleted or the ID is incorrect.`)
+      } else if (err.response?.status >= 500) {
+        setError('Server error. Please try again later.')
+      } else {
+        setError('Failed to load store details. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
@@ -141,22 +158,20 @@ const StoreDetail = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-8">
       {/* Back Button */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center justify-between">
         <button
           onClick={() => navigate('/stores')}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center space-x-2 text-gray-600 hover:text-emerald-600 transition-colors font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Stores</span>
         </button>
         
-        <div className="flex-1"></div>
-        
         <button
           onClick={handleShareStore}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center space-x-2 text-gray-600 hover:text-emerald-600 transition-colors font-medium"
         >
           <Share2 className="h-4 w-4" />
           <span>Share</span>
@@ -164,61 +179,59 @@ const StoreDetail = () => {
       </div>
 
       {/* Store Header */}
-      <div className="card p-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Store Image (placeholder) */}
           <div className="flex-shrink-0">
-            <div className="w-24 h-24 bg-primary-100 rounded-lg flex items-center justify-center">
-              <Store className="h-10 w-10 text-primary-600" />
+            <div className="w-32 h-32 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl flex items-center justify-center">
+              <Store className="h-12 w-12 text-emerald-600" />
             </div>
           </div>
 
           {/* Store Info */}
           <div className="flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 mb-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3 leading-tight">
                   {store.name}
                 </h1>
-                <div className="flex items-center space-x-4 text-gray-600">
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="h-4 w-4" />
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-gray-600">
+                  <div className="flex items-center space-x-2">
+                    <MapPin className="h-5 w-5 text-emerald-600" />
                     <span className="text-sm">{store.address}</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <User className="h-4 w-4" />
+                  <div className="flex items-center space-x-2">
+                    <User className="h-5 w-5 text-emerald-600" />
                     <span className="text-sm">Owner: {store.owner_name}</span>
                   </div>
                 </div>
               </div>
 
               {/* Rating Section */}
-              <div className="flex items-center space-x-4">
-                <div className="text-center">
-                  <div className="flex items-center space-x-1 mb-1">
-                    <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                    <span className="text-2xl font-bold text-gray-900">
-                      {store.average_rating ? store.average_rating.toFixed(1) : '0.0'}
-                    </span>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {store.total_ratings || 0} ratings
-                  </div>
+              <div className="text-center">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Star className="h-6 w-6 text-yellow-500 fill-current" />
+                  <span className="text-3xl font-bold text-gray-900">
+                    {store.average_rating ? store.average_rating.toFixed(1) : '0.0'}
+                  </span>
+                </div>
+                <div className="text-sm text-gray-600">
+                  {store.total_ratings || 0} ratings
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               {isAuthenticated ? (
                 <>
                   {userRating ? (
-                    <div className="flex items-center space-x-2">
-                      <span className="text-gray-700">Your rating:</span>
+                    <div className="flex items-center space-x-3 bg-emerald-50 px-4 py-2 rounded-lg">
+                      <span className="text-gray-700 font-medium">Your rating:</span>
                       <RatingStars rating={userRating} />
                       <button
                         onClick={() => setShowRatingForm(true)}
-                        className="text-primary-600 hover:text-primary-700 font-medium text-sm"
+                        className="text-emerald-600 hover:text-emerald-700 font-medium text-sm transition-colors"
                       >
                         Update
                       </button>
@@ -226,8 +239,9 @@ const StoreDetail = () => {
                   ) : (
                     <button
                       onClick={() => setShowRatingForm(true)}
-                      className="btn-primary"
+                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                     >
+                      <Star className="h-4 w-4 mr-2" />
                       Rate This Store
                     </button>
                   )}
@@ -235,9 +249,10 @@ const StoreDetail = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="btn-primary"
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                   state={{ from: `/stores/${id}` }}
                 >
+                  <Star className="h-4 w-4 mr-2" />
                   Login to Rate
                 </Link>
               )}
@@ -246,10 +261,10 @@ const StoreDetail = () => {
               {(isAdmin || (isStoreOwner && user?.id === store.owner_id)) && (
                 <button 
                   onClick={() => setShowEditForm(true)}
-                  className="btn-secondary flex items-center space-x-2"
+                  className="inline-flex items-center px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-all duration-200 font-medium"
                 >
-                  <Edit className="h-4 w-4" />
-                  <span>Edit Store</span>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Store
                 </button>
               )}
             </div>
@@ -258,16 +273,16 @@ const StoreDetail = () => {
       </div>
 
       {/* Tabs */}
-      <div className="card">
-        <div className="border-b">
-          <nav className="flex space-x-8 px-6">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+        <div className="border-b border-gray-200">
+          <nav className="flex space-x-8 px-8">
             {['overview', 'ratings', 'contact'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
+                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-all duration-200 ${
                   activeTab === tab
-                    ? 'border-primary-500 text-primary-600'
+                    ? 'border-emerald-500 text-emerald-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -278,53 +293,68 @@ const StoreDetail = () => {
         </div>
 
         {/* Tab Content */}
-        <div className="p-6">
+        <div className="p-8">
           {activeTab === 'overview' && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   About This Store
                 </h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-lg text-gray-700 leading-relaxed">
                   {store.description || `Welcome to ${store.name}! Located at ${store.address}, this store is owned and operated by ${store.owner_name}.`}
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h4 className="font-medium text-gray-900">Store Information</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3 text-gray-700">
-                      <User className="h-5 w-5 text-gray-400" />
-                      <span>Owner: {store.owner_name}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <h4 className="text-xl font-semibold text-gray-900">Store Information</h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-4 text-gray-700">
+                      <div className="bg-emerald-100 p-2 rounded-lg">
+                        <User className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Owner</p>
+                        <p>{store.owner_name}</p>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-3 text-gray-700">
-                      <MapPin className="h-5 w-5 text-gray-400" />
-                      <span>{store.address}</span>
+                    <div className="flex items-center space-x-4 text-gray-700">
+                      <div className="bg-emerald-100 p-2 rounded-lg">
+                        <MapPin className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Address</p>
+                        <p>{store.address}</p>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-3 text-gray-700">
-                      <Clock className="h-5 w-5 text-gray-400" />
-                      <span>Joined: {new Date(store.created_at).toLocaleDateString()}</span>
+                    <div className="flex items-center space-x-4 text-gray-700">
+                      <div className="bg-emerald-100 p-2 rounded-lg">
+                        <Clock className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Joined</p>
+                        <p>{new Date(store.created_at).toLocaleDateString()}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h4 className="font-medium text-gray-900">Rating Summary</h4>
-                  <div className="space-y-2">
+                <div className="space-y-6">
+                  <h4 className="text-xl font-semibold text-gray-900">Rating Summary</h4>
+                  <div className="space-y-3">
                     {[5, 4, 3, 2, 1].map((stars) => (
-                      <div key={stars} className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-600 w-4">{stars}</span>
+                      <div key={stars} className="flex items-center space-x-3">
+                        <span className="text-sm text-gray-600 w-4 font-medium">{stars}</span>
                         <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                        <div className="flex-1 bg-gray-200 rounded-full h-3">
                           <div 
-                            className="bg-yellow-500 h-2 rounded-full" 
+                            className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-3 rounded-full transition-all duration-300" 
                             style={{ 
                               width: `${(store.rating_distribution?.[stars] || 0) * 100}%` 
                             }}
                           ></div>
                         </div>
-                        <span className="text-sm text-gray-600 w-8">
+                        <span className="text-sm text-gray-600 w-8 font-medium">
                           {store.rating_distribution?.[stars] || 0}
                         </span>
                       </div>
@@ -336,20 +366,20 @@ const StoreDetail = () => {
           )}
 
           {activeTab === 'ratings' && (
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-2xl font-bold text-gray-900">
                   Customer Reviews ({ratings.length})
                 </h3>
               </div>
 
               {ratings.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {ratings.map((rating) => (
-                    <div key={rating.id} className="border-b border-gray-200 pb-4 last:border-0">
-                      <div className="flex justify-between items-start mb-2">
+                    <div key={rating.id} className="border-b border-gray-200 pb-6 last:border-0">
+                      <div className="flex justify-between items-start mb-3">
                         <div>
-                          <h4 className="font-medium text-gray-900">
+                          <h4 className="font-semibold text-gray-900 text-lg">
                             {rating.user_name || 'Anonymous User'}
                           </h4>
                           <p className="text-sm text-gray-600">
@@ -359,18 +389,20 @@ const StoreDetail = () => {
                         <RatingStars rating={rating.rating} />
                       </div>
                       {rating.comment && (
-                        <p className="text-gray-700 mt-2">{rating.comment}</p>
+                        <p className="text-gray-700 mt-2 text-lg leading-relaxed">{rating.comment}</p>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Star className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                <div className="text-center py-12">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+                    <Star className="h-10 w-10 text-gray-400" />
+                  </div>
+                  <h4 className="text-2xl font-bold text-gray-900 mb-3">
                     No Reviews Yet
                   </h4>
-                  <p className="text-gray-600">
+                  <p className="text-lg text-gray-600">
                     Be the first to rate this store!
                   </p>
                 </div>
@@ -379,28 +411,32 @@ const StoreDetail = () => {
           )}
 
           {activeTab === 'contact' && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">
                   Contact Information
                 </h3>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3 text-gray-700">
-                    <MapPin className="h-5 w-5 text-gray-400" />
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-4 text-gray-700">
+                    <div className="bg-emerald-100 p-3 rounded-lg">
+                      <MapPin className="h-6 w-6 text-emerald-600" />
+                    </div>
                     <div>
-                      <p className="font-medium">Address</p>
-                      <p>{store.address}</p>
+                      <p className="font-semibold text-lg">Address</p>
+                      <p className="text-lg">{store.address}</p>
                     </div>
                   </div>
                   
                   {store.email && (
-                    <div className="flex items-center space-x-3 text-gray-700">
-                      <Globe className="h-5 w-5 text-gray-400" />
+                    <div className="flex items-center space-x-4 text-gray-700">
+                      <div className="bg-emerald-100 p-3 rounded-lg">
+                        <Globe className="h-6 w-6 text-emerald-600" />
+                      </div>
                       <div>
-                        <p className="font-medium">Email</p>
+                        <p className="font-semibold text-lg">Email</p>
                         <a 
                           href={`mailto:${store.email}`}
-                          className="text-primary-600 hover:text-primary-700"
+                          className="text-emerald-600 hover:text-emerald-700 text-lg transition-colors"
                         >
                           {store.email}
                         </a>
@@ -409,13 +445,15 @@ const StoreDetail = () => {
                   )}
 
                   {store.phone && (
-                    <div className="flex items-center space-x-3 text-gray-700">
-                      <Phone className="h-5 w-5 text-gray-400" />
+                    <div className="flex items-center space-x-4 text-gray-700">
+                      <div className="bg-emerald-100 p-3 rounded-lg">
+                        <Phone className="h-6 w-6 text-emerald-600" />
+                      </div>
                       <div>
-                        <p className="font-medium">Phone</p>
+                        <p className="font-semibold text-lg">Phone</p>
                         <a 
                           href={`tel:${store.phone}`}
-                          className="text-primary-600 hover:text-primary-700"
+                          className="text-emerald-600 hover:text-emerald-700 text-lg transition-colors"
                         >
                           {store.phone}
                         </a>
@@ -426,10 +464,10 @@ const StoreDetail = () => {
               </div>
 
               {/* Map placeholder */}
-              <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+              <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl h-80 flex items-center justify-center">
                 <div className="text-center text-gray-500">
-                  <MapPin className="h-8 w-8 mx-auto mb-2" />
-                  <p>Map view would be displayed here</p>
+                  <MapPin className="h-12 w-12 mx-auto mb-4" />
+                  <p className="text-lg font-medium">Map view would be displayed here</p>
                 </div>
               </div>
             </div>

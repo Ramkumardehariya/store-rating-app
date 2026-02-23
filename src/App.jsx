@@ -6,11 +6,13 @@ import Footer from './components/common/Footer'
 import Home from './pages/Home'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
+import UpdatePassword from './pages/auth/UpdatePassword'
 import Stores from './pages/stores/Stores'
 import StoreDetail from './pages/stores/StoreDetail'
 import MyRatings from './pages/ratings/MyRatings'
 import AdminDashboard from './pages/dashboard/AdminDashboard'
 import StoreOwnerDashboard from './pages/dashboard/StoreOwnerDashboard'
+import UserDashboard from './pages/dashboard/UserDashboard'
 import UserProfile from './pages/dashboard/UserProfile'
 import CreateUserForm from './components/dashboard/CreateUserForm'
 import CreateStoreForm from './components/dashboard/CreateStoreForm'
@@ -42,6 +44,18 @@ function App() {
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <UserProfile />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/update-password" element={
+                <ProtectedRoute>
+                  <UpdatePassword />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/user/dashboard" element={
+                <ProtectedRoute allowedRoles={['user']}>
+                  <UserDashboard />
                 </ProtectedRoute>
               } />
               

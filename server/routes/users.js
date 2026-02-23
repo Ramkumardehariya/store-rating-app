@@ -29,10 +29,10 @@ router.post('/createUser',
   userController.createUser
 );
 
-router.get('/getAllUsers', userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 router.get('/dashboard/stats', userController.getDashboardStats);
 
-router.get('/getUserById/:id', 
+router.get('/:id', 
   validateUserExists,
   userController.getUserById
 );

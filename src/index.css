@@ -1,26 +1,25 @@
 @import "tailwindcss";
 
-
 .wrapper {
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #f9fafb; /* fallback for bg-gray-50 */
+  background-color: #fafafa; /* Lighter gray background */
 }
 
 /* Base styles */
 body {
-  background-color: #f9fafb; /* bg-gray-50 */
-  color: #111827; /* text-gray-900 */
+  background-color: #fafafa; /* Light gray background */
+  color: #1f2937; /* Darker gray text */
   margin: 0;
   font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 /* Typography helpers */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+  font-weight: 700;
   color: #111827;
 }
 
@@ -35,62 +34,86 @@ a:hover {
 
 /* Buttons */
 .btn-primary {
-  background-color: #0086c9; /* bg-primary-600 */
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Emerald gradient */
   color: #ffffff;
-  font-weight: 500;
-  padding: 0.5rem 1.25rem; /* py-2 px-5 */
+  font-weight: 600;
+  padding: 0.75rem 2rem; /* py-3 px-8 */
   border-radius: 0.75rem; /* rounded-xl */
-  transition: background-color 0.2s, transform 0.15s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 134, 201, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
 }
 
 .btn-primary:hover {
-  background-color: #026aa2; /* bg-primary-700 */
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
 }
 
 .btn-secondary {
-  background-color: #f3f4f6; /* bg-gray-100 */
-  color: #111827;
-  font-weight: 500;
-  padding: 0.5rem 1.25rem;
+  background-color: #ffffff;
+  color: #374151;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
   border-radius: 0.75rem;
-  transition: background-color 0.2s, transform 0.15s ease;
+  border: 2px solid #e5e7eb;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .btn-secondary:hover {
-  background-color: #e5e7eb; /* bg-gray-200 */
+  background-color: #f9fafb;
+  border-color: #10b981;
+  color: #10b981;
   transform: translateY(-1px);
 }
 
 /* Inputs */
 .input-field {
   width: 100%;
-  padding: 0.625rem 0.875rem; /* py-2.5 px-3.5 */
-  border: 1px solid #d1d5db; /* border-gray-300 */
+  padding: 0.75rem 1rem; /* py-3 px-4 */
+  border: 2px solid #e5e7eb;
   border-radius: 0.75rem; /* rounded-xl */
   outline: none;
   background-color: #ffffff;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition: all 0.2s ease;
+  font-size: 0.875rem; /* text-sm */
 }
 
 .input-field:focus {
-  border-color: #0ba5e9; /* focus:border-primary-500 */
-  box-shadow: 0 0 0 3px rgba(11, 165, 233, 0.3); /* focus:ring */
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
 /* Cards */
 .card {
   background-color: #ffffff;
-  border-radius: 0.75rem; /* rounded-xl */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 2rem;
+  transition: all 0.3s ease;
+  border: 1px solid #f3f4f6;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }

@@ -2,12 +2,12 @@ import api from './api'
 
 export const storeService = {
   async getAllStores(filters = {}) {
-    const response = await api.get('/stores/getAllStores', { params: filters })
+    const response = await api.get('/stores', { params: filters })
     return response.data
   },
 
   async getStoreById(id) {
-    const response = await api.get(`/stores/getStoreByid/${id}`)
+    const response = await api.get(`/stores/${id}`)
     return response.data
   },
 
@@ -44,7 +44,7 @@ export const storeService = {
   },
 
   async getStoreRatings(storeId, filters = {}) {
-    const response = await api.get(`/stores/${storeId}/ratings`, {
+    const response = await api.get(`/ratings/store/${storeId}/ratings`, {
       params: filters
     })
     return response.data

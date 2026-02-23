@@ -70,9 +70,17 @@ const Login = () => {
     const result = await login(formData.email, formData.password)
     
     if (result.success) {
-      // Success - redirect to intended page or home
-      const from = location.state?.from?.pathname || '/'
-      navigate(from, { replace: true })
+      // Role-based redirect
+      const userRole = result.user.role
+      if (userRole === 'admin') {
+        navigate('/admin/dashboard', { replace: true })
+      } else if (userRole === 'store_owner') {
+        navigate('/store-owner/dashboard', { replace: true })
+      } else {
+        // For regular users, redirect to stores page or intended page
+        const from = location.state?.from?.pathname || '/stores'
+        navigate(from, { replace: true })
+      }
     } else {
       setError(result.error)
     }
@@ -92,29 +100,29 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-6">
+      <div className="max-w-md mx-auto space-y-6">
         {/* Demo Accounts */}
-        <div className="card">
+        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">
             Quick Access - Demo Accounts
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <button
               onClick={() => handleDemoLogin('admin')}
-              className="btn-secondary text-xs py-2.5 px-3"
+              className="px-3 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-all duration-200 text-xs font-medium"
             >
               <span className="font-medium">Admin</span>
             </button>
             <button
               onClick={() => handleDemoLogin('store_owner')}
-              className="btn-secondary text-xs py-2.5 px-3"
+              className="px-3 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-all duration-200 text-xs font-medium"
             >
               <span className="font-medium">Store Owner</span>
             </button>
             <button
               onClick={() => handleDemoLogin('user')}
-              className="btn-secondary text-xs py-2.5 px-3"
+              className="px-3 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-all duration-200 text-xs font-medium"
             >
               <span className="font-medium">Regular User</span>
             </button>
@@ -122,19 +130,20 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <form className="space-y-6 card" onSubmit={handleSubmit}>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
           {/* Form Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-              <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center">
                 <Lock className="h-4 w-4 text-white" />
               </div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Secure Login</h3>
             <p className="text-sm text-gray-600">Enter your credentials to continue</p>
           </div>
+          
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
               <div className="flex">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
@@ -153,18 +162,13 @@ const Login = () => {
             </div>
           )}
 
-          <div className="space-y-4">
-            {/* Email Field */}
-            <div className="group">
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <div className="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Mail className="h-3 w-3 text-gray-500" />
-                  </div>
-                </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              {/* Email Field */}
+              <div className="group">
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email Address
+                </label>
                 <input
                   id="email"
                   name="email"
@@ -172,143 +176,138 @@ const Login = () => {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`input-field pl-12 ${
+                  className={`input-field ${
                     validationErrors.email ? 'border-red-300 bg-red-50' : ''
                   }`}
                   placeholder="name@example.com"
                 />
-              </div>
-              {validationErrors.email && (
-                <div className="mt-2 flex items-center">
-                  <AlertCircle className="h-4 w-4 text-red-500 mr-1" />
-                  <p className="text-sm text-red-600">{validationErrors.email}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Password Field */}
-            <div className="group">
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <div className="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Lock className="h-3 w-3 text-gray-500" />
+                {validationErrors.email && (
+                  <div className="mt-2 flex items-center">
+                    <AlertCircle className="h-4 w-4 text-red-500 mr-1" />
+                    <p className="text-sm text-red-600">{validationErrors.email}</p>
                   </div>
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`input-field pl-12 pr-12 ${
-                    validationErrors.password ? 'border-red-300 bg-red-50' : ''
-                  }`}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center group"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-500" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-500" />
-                    )}
-                  </div>
-                </button>
-              </div>
-              {validationErrors.password && (
-                <div className="mt-2 flex items-center">
-                  <AlertCircle className="h-4 w-4 text-red-500 mr-1" />
-                  <p className="text-sm text-red-600">{validationErrors.password}</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Remember me and Forgot password */}
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded-md"
-              />
-              <label htmlFor="remember-me" className="ml-3 block text-sm font-medium text-gray-700 cursor-pointer">
-                Keep me signed in
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="#" className="font-medium text-primary-600 hover:text-primary-700">
-                Forgot password?
-              </a>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <div className="pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full flex justify-center py-3.5 disabled:opacity-50"
-            >
-              <span className="flex items-center">
-                {loading ? (
-                  <>
-                    <LoadingSpinner size="sm" />
-                    <span className="ml-2">Logging in...</span>
-                  </>
-                ) : (
-                  <>
-                    <Lock className="h-4 w-4 mr-2" />
-                    Log in
-                  </>
                 )}
-              </span>
-            </button>
-          </div>
+              </div>
 
-          {/* Divider */}
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              {/* Password Field */}
+              <div className="group">
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={`input-field pr-12 ${
+                      validationErrors.password ? 'border-red-300 bg-red-50' : ''
+                    }`}
+                    placeholder="•••••••••••"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center group"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-500" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-500" />
+                      )}
+                    </div>
+                  </button>
+                </div>
+                {validationErrors.password && (
+                  <div className="mt-2 flex items-center">
+                    <AlertCircle className="h-4 w-4 text-red-500 mr-1" />
+                    <p className="text-sm text-red-600">{validationErrors.password}</p>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500 font-medium">New to StoreRatings?</span>
-            </div>
-          </div>
 
-          <div className="space-y-3">
-            <Link
-              to="/register"
-              className="btn-secondary w-full flex justify-center py-3.5"
-            >
-              <span className="flex items-center">
-                <Store className="h-4 w-4 mr-2" />
-                Create your account
-              </span>
-            </Link>
-          </div>
-        </form>
+            {/* Remember me and Forgot password */}
+            <div className="flex items-center justify-between pt-2">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded-md"
+                />
+                <label htmlFor="remember-me" className="ml-3 block text-sm font-medium text-gray-700 cursor-pointer">
+                  Keep me signed in
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a href="#" className="font-medium text-emerald-600 hover:text-emerald-700">
+                  Forgot password?
+                </a>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-3.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:transform-none"
+              >
+                <span className="flex items-center">
+                  {loading ? (
+                    <>
+                      <LoadingSpinner size="sm" />
+                      <span className="ml-2">Logging in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="h-4 w-4 mr-2" />
+                      Log in
+                    </>
+                  )}
+                </span>
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="relative my-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500 font-medium">New to StoreRatings?</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Link
+                to="/register"
+                className="w-full flex justify-center py-3.5 px-4 bg-white border-2 border-gray-200 text-gray-700 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-all duration-200 font-medium"
+              >
+                <span className="flex items-center">
+                  <Store className="h-4 w-4 mr-2" />
+                  Create your account
+                </span>
+              </Link>
+            </div>
+          </form>
+        </div>
 
         {/* Additional Info */}
-        <div className="text-center pt-4">
-          <div className="card inline-flex items-center justify-center p-4">
+        <div className="text-center pt-6">
+          <div className="bg-white rounded-xl border border-gray-100 p-4 inline-block">
             <p className="text-xs text-gray-600">
               Protected by reCAPTCHA and subject to the{' '}
-              <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+              <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">
                 Privacy Policy
               </a>{' '}
               and{' '}
-              <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+              <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">
                 Terms of Service
               </a>
             </p>

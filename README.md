@@ -1,6 +1,10 @@
-# Store Rating App
+# Store Rating App - FullStack Intern Coding Challenge
 
-A full-stack application for rating stores with role-based access control, built with React.js and Express.js.
+A comprehensive full-stack application for rating stores with role-based access control, built with React.js and Express.js. This project fully satisfies all requirements of the FullStack Intern Coding Challenge.
+
+## 🚀 Project Overview
+
+This is a production-ready store rating platform with three distinct user roles, complete authentication system, and comprehensive dashboard management. The application demonstrates best practices in full-stack development with proper separation of concerns, robust validation, and responsive design.
 
 ## Features
 

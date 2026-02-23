@@ -13,7 +13,7 @@ export const userService = {
    * Get all users with optional filtering and pagination (admin only)
    */
   async getAllUsers(filters = {}) {
-    const response = await api.get('/users/getAllUsers', { params: filters })
+    const response = await api.get('/users', { params: filters })
     return response.data
   },
 
@@ -21,7 +21,7 @@ export const userService = {
    * Get user by ID (admin only)
    */
   async getUserById(id) {
-    const response = await api.get(`/users/getUserById/${id}`)
+    const response = await api.get(`/users/${id}`)
     return response.data
   },
 

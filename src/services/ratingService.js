@@ -2,18 +2,18 @@ import api from './api'
 
 export const ratingService = {
   async submitRating(ratingData) {
-    const response = await api.post('/ratings/submitRating', ratingData)
+    const response = await api.post('/ratings', ratingData)
     return response.data
   },
 
   async getUserRatings() {
-    const response = await api.get('/ratings/getUserRating');
+    const response = await api.get('/ratings/user');
     console.log("response data: ", response.data);
     return response.data
   },
 
   async getStoreWithUserRating(storeId) {
-    const response = await api.get(`/ratings/store/rating/${storeId}`)
+    const response = await api.get(`/ratings/store/${storeId}`)
     return response.data
   },
 

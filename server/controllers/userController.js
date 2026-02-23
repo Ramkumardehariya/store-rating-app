@@ -32,7 +32,7 @@ exports.createUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Create user error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 };
 
@@ -40,7 +40,20 @@ exports.getAllUsers = async (req, res) => {
   try {
     const { name, email, address, role, sortBy, sortOrder } = req.query;
     
-    const filters = { name, email, address, role, sortBy, sortOrder };
+    // Get pagination from middleware
+    const { limit, offset } = req.pagination;
+    
+    const filters = { 
+      name, 
+      email, 
+      address, 
+      role, 
+      sortBy, 
+      sortOrder, 
+      limit, 
+      offset 
+    };
+    
     const users = await User.getAllUsers(filters);
     
     // For store owners, get their store rating
@@ -67,6 +80,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
+    
     const user = await User.findById(id);
     
     if (!user) {

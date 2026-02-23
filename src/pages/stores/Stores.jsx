@@ -105,13 +105,15 @@ const Stores = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">All Stores</h1>
-          <p className="text-gray-600 mt-1">
-            Discover and rate your favorite stores
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+            All Stores
+          </h1>
+          <p className="text-xl text-gray-600 mt-3 max-w-2xl">
+            Discover and rate your favorite stores in your community
           </p>
         </div>
         
@@ -119,7 +121,7 @@ const Stores = () => {
           {isAdmin && (
             <Link
               to="/admin/create-store"
-              className="btn-primary flex items-center space-x-2"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               <Plus className="h-4 w-4" />
               <span>Add Store</span>
@@ -129,42 +131,41 @@ const Stores = () => {
       </div>
 
       {/* Search and Controls */}
-      <div className="card p-4">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
                 placeholder="Search stores by name, address, or owner..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 input-field"
+                className="w-full pr-4 py-3 input-field text-lg"
               />
             </div>
           </form>
 
           {/* View Controls */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center space-x-2 px-3 py-2 border rounded-lg ${
+              className={`flex items-center space-x-2 px-4 py-3 border-2 rounded-lg font-medium transition-all duration-200 ${
                 showFilters 
-                  ? 'bg-primary-50 border-primary-300 text-primary-700' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-700' 
+                  : 'border-gray-200 text-gray-700 hover:border-emerald-300 hover:bg-emerald-50'
               }`}
             >
               <Filter className="h-4 w-4" />
               <span>Filters</span>
             </button>
 
-            <div className="flex border border-gray-300 rounded-lg overflow-hidden">
+            <div className="flex border-2 border-gray-200 rounded-lg overflow-hidden">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 ${
+                className={`p-3 transition-all duration-200 ${
                   viewMode === 'grid' 
-                    ? 'bg-primary-600 text-white' 
+                    ? 'bg-emerald-500 text-white' 
                     : 'bg-white text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -172,9 +173,9 @@ const Stores = () => {
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 ${
+                className={`p-3 transition-all duration-200 ${
                   viewMode === 'list' 
-                    ? 'bg-primary-600 text-white' 
+                    ? 'bg-emerald-500 text-white' 
                     : 'bg-white text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -186,21 +187,21 @@ const Stores = () => {
 
         {/* Active Filters */}
         {(filters.name || filters.address) && (
-          <div className="mt-3 flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Active filters:</span>
+          <div className="mt-4 flex items-center space-x-3">
+            <span className="text-sm text-gray-600 font-medium">Active filters:</span>
             {filters.name && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary-100 text-primary-800">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-emerald-100 text-emerald-800 font-medium">
                 Name: {filters.name}
               </span>
             )}
             {filters.address && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary-100 text-primary-800">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-emerald-100 text-emerald-800 font-medium">
                 Address: {filters.address}
               </span>
             )}
             <button
               onClick={clearFilters}
-              className="text-sm text-red-600 hover:text-red-700 font-medium"
+              className="text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
             >
               Clear all
             </button>
@@ -210,7 +211,7 @@ const Stores = () => {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="card p-4">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
           <StoreFilters 
             filters={filters} 
             onFilterChange={handleFilterChange}
@@ -221,12 +222,12 @@ const Stores = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl">
           <div className="flex items-center justify-between">
-            <span>{error}</span>
+            <span className="font-medium">{error}</span>
             <button
               onClick={loadStores}
-              className="text-red-700 hover:text-red-800 font-medium text-sm"
+              className="text-red-700 hover:text-red-800 font-medium text-sm transition-colors"
             >
               Try Again
             </button>
@@ -238,8 +239,8 @@ const Stores = () => {
       {filteredStores.length > 0 ? (
         <div className={
           viewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-            : 'space-y-4'
+            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+            : 'space-y-6'
         }>
           {filteredStores.map((store) => (
             <StoreCard 
@@ -251,12 +252,14 @@ const Stores = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12">
-          <Store className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="text-center py-16">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+            <Store className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">
             No stores found
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-lg text-gray-600 mb-6 max-w-md mx-auto">
             {filters.name || filters.address 
               ? 'Try adjusting your search criteria or filters'
               : 'There are no stores available at the moment'
@@ -265,7 +268,7 @@ const Stores = () => {
           {(filters.name || filters.address) && (
             <button
               onClick={clearFilters}
-              className="btn-primary"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               Clear Search & Filters
             </button>
@@ -278,7 +281,7 @@ const Stores = () => {
         <div className="flex justify-center">
           <button
             onClick={loadStores}
-            className="btn-secondary"
+            className="px-8 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-all duration-200 font-medium"
             disabled={loading}
           >
             {loading ? 'Loading...' : 'Load More'}

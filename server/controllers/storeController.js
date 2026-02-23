@@ -94,6 +94,31 @@ exports.getStoreOwnerDashboard = async (req, res) => {
   }
 };
 
+exports.getStoreRatings = async (req, res) => {
+  try {
+    console.log('getStoreRatings controller called with params:', req.params);
+    const { id } = req.params;
+    console.log('Extracted id:', id);
+    
+    const store = await Store.findById(id);
+    console.log('Store found:', store);
+    
+    if (!store) {
+      console.log('Store not found, returning 404');
+      return res.status(404).json({ error: 'Store not found' });
+    }
+
+    console.log('Getting ratings for store id:', id);
+    const ratings = await Store.getStoreRatings(id);
+    console.log('Ratings found:', ratings);
+    
+    res.json({ ratings });
+  } catch (error) {
+    console.error('Get store ratings error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 exports.updateStore = async (req, res) => {
   try {
     const errors = validationResult(req);
