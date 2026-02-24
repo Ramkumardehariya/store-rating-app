@@ -32,6 +32,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Store Rating App Backend Server is running successfully!',
+    status: 'active',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/api/health',
+      db_health: '/api/db-health',
+      auth: '/api/auth',
+      users: '/api/users',
+      stores: '/api/stores',
+      ratings: '/api/ratings'
+    }
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/stores', storeRoutes);
