@@ -67,7 +67,7 @@ app.use((err, req, res, next) => {
 // 404 handler
 app.use((req, res) => {
   console.log('404 handler hit for:', req.method, req.url);
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({ error: 'Route not found', error_message: error.message });
 });
 
 const PORT = process.env.PORT || 5000;
